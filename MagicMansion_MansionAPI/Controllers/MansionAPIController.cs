@@ -7,6 +7,7 @@ namespace MagicMansion_MansionAPI.Controllers
     [ApiController]
     public class MansionAPIController : ControllerBase
     {
+        [HttpGet]
         public IEnumerable<Mansion> GetMansions()
         {
             return new List<Mansion>
