@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MagicMansion_MansionAPI.Controllers
 {
     [Route("api/MansionAPI")]
-    //[ApiController]
+    [ApiController]
     public class MansionAPIController : ControllerBase
     {
         [HttpGet]
@@ -16,13 +16,13 @@ namespace MagicMansion_MansionAPI.Controllers
             return Ok(MansionStore.masionList);
         }
 
-        [HttpGet("{id:int}",Name="GetMansion")]
+        [HttpGet("{id:int}", Name = "GetMansion")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<MansionDTO> GetMansion(int id)
         {
-            if(id== 0)
+            if (id == 0)
             {
                 return BadRequest();
             }
@@ -38,13 +38,18 @@ namespace MagicMansion_MansionAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<MansionDTO> CreateMasion([FromBody]MansionDTO mansionDTO)
+        public ActionResult<MansionDTO> CreateMasion([FromBody] MansionDTO mansionDTO)
         {
-            if(ModelState.IsValid)
+            //if(!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
+            if (MansionStore.masionList.FirstOrDefault(u => u.Name.ToLower() == mansionDTO.Name.ToLower()) != null)
             {
-
+                ModelState.AddModelError("Custom error", "Mansion already exists");
+                return BadRequest(ModelState);
             }
-            if(mansionDTO == null)
+            if (mansionDTO == null)
             {
                 return BadRequest();
             }
@@ -52,9 +57,33 @@ namespace MagicMansion_MansionAPI.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            mansionDTO.Id = MansionStore.masionList.OrderByDescending(u=>u.Id).FirstOrDefault().Id+1;
+            mansionDTO.Id = MansionStore.masionList.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
             MansionStore.masionList.Add(mansionDTO);
-            return CreatedAtRoute("GetMansion",new {id = mansionDTO.Id},mansionDTO);
+            return CreatedAtRoute("GetMansion", new { id = mansionDTO.Id }, mansionDTO);
+        }
+        [HttpDelete("{id:int}", Name = "DeleteMansion")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult DeleteMansion(int id)
+        {
+            if (id == 0) return BadRequest();
+            var mansion = MansionStore.masionList.FirstOrDefault(u => u.Id == id);
+            if (mansion == null) return NotFound();
+            MansionStore.masionList.Remove(mansion);
+            return NoContent();
+        }
+        [HttpPut("{id:int}", Name = "UpdateMansion")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult UpdateMansion(int id,[FromBody] MansionDTO mansionDTO)
+        {
+            if(mansionDTO == null || id != mansionDTO.Id) return BadRequest();
+            var mansion = MansionStore.masionList.FirstOrDefault(u=>u.Id== id);
+            mansion.Name = mansionDTO.Name;
+            mansion.Sqft= mansionDTO.Sqft;
+            mansion.Occupancy = mansionDTO.Occupancy;
+            return NoContent();
         }
     }
 }
