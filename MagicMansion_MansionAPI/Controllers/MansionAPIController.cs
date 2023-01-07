@@ -1,6 +1,7 @@
 ﻿using MagicMansion_MansionAPI.Data;
 using MagicMansion_MansionAPI.Models;
 using MagicMansion_MansionAPI.Models.Dto;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicMansion_MansionAPI.Controllers
@@ -79,10 +80,22 @@ namespace MagicMansion_MansionAPI.Controllers
         public IActionResult UpdateMansion(int id,[FromBody] MansionDTO mansionDTO)
         {
             if(mansionDTO == null || id != mansionDTO.Id) return BadRequest();
-            var mansion = MansionStore.masionList.FirstOrDefault(u=>u.Id== id);
+            var mansion = MansionStore.masionList.FirstOrDefault(u=>u.Id==id);
             mansion.Name = mansionDTO.Name;
             mansion.Sqft= mansionDTO.Sqft;
             mansion.Occupancy = mansionDTO.Occupancy;
+            return NoContent();
+        }
+        [HttpPatch("{id:int}", Name = "UpdatePartialMansion")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult UpdatePartialMansion(int id, JsonPatchDocument<MansionDTO> patchDTO)
+        {
+            if(patchDTO == null || id==0) return BadRequest();
+            var mansion = MansionStore.masionList.FirstOrDefault(u=>u.Id==id);
+            if(mansion == null) return BadRequest();
+            patchDTO.ApplyTo(mansion,ModelState);
+            if(!ModelState.IsValid) return BadRequest(ModelState);
             return NoContent();
         }
     }
