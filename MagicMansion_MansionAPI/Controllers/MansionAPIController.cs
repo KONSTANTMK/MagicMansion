@@ -10,6 +10,10 @@ namespace MagicMansion_MansionAPI.Controllers
     [ApiController]
     public class MansionAPIController : ControllerBase
     {
+        public MansionAPIController()
+        {
+
+        }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<MansionDTO>> GetMansions()
