@@ -10,11 +10,11 @@ namespace MagicMansion_MansionAPI.Controllers
     [ApiController]
     public class MansionAPIController : ControllerBase
     {
-        private readonly ILogger<MansionAPIController> _logger;
+        //private readonly ILogger<MansionAPIController> _logger;
 
-        public MansionAPIController(ILogger<MansionAPIController> logger)
+        public MansionAPIController(/*ILogger<MansionAPIController> logger*/)
         {
-            _logger = logger;
+            //_logger = logger;
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
