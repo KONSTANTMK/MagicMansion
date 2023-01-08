@@ -10,14 +10,17 @@ namespace MagicMansion_MansionAPI.Controllers
     [ApiController]
     public class MansionAPIController : ControllerBase
     {
-        public MansionAPIController()
-        {
+        private readonly ILogger<MansionAPIController> _logger;
 
+        public MansionAPIController(ILogger<MansionAPIController> logger)
+        {
+            _logger = logger;
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<MansionDTO>> GetMansions()
         {
+            _logger.LogInformation("Geting all mansions");
             return Ok(MansionStore.masionList);
         }
 
@@ -29,6 +32,7 @@ namespace MagicMansion_MansionAPI.Controllers
         {
             if (id == 0)
             {
+                _logger.LogError("Get mansion error with id " + id);
                 return BadRequest();
             }
             var Mansion = MansionStore.masionList.FirstOrDefault(u => u.Id == id);
