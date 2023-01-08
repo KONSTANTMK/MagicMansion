@@ -1,4 +1,5 @@
 ﻿using MagicMansion_MansionAPI.Data;
+//using MagicMansion_MansionAPI.Logging;
 using MagicMansion_MansionAPI.Models;
 using MagicMansion_MansionAPI.Models.Dto;
 using Microsoft.AspNetCore.JsonPatch;
@@ -10,17 +11,24 @@ namespace MagicMansion_MansionAPI.Controllers
     [ApiController]
     public class MansionAPIController : ControllerBase
     {
-        //private readonly ILogger<MansionAPIController> _logger;
 
-        public MansionAPIController(/*ILogger<MansionAPIController> logger*/)
-        {
-            //_logger = logger;
-        }
+        //Main logger//private readonly ILogger<MansionAPIController> _logger;
+        //public MansionAPIController(ILogger<MansionAPIController> logger)
+        //{
+        //    //Main logger//_logger = logger;
+        //}
+
+        //Custom logger//private readonly ILogging _logger;
+        //public MansionAPIController(ILogging logger)
+        //{
+        //    _logger= logger;
+        //}
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<MansionDTO>> GetMansions()
         {
-            _logger.LogInformation("Geting all mansions");
+            //Main logger//_logger.LogInformation("Geting all mansions");
+            //Custom logger//_logger.Log("Geting all mansions","");
             return Ok(MansionStore.masionList);
         }
 
@@ -32,7 +40,8 @@ namespace MagicMansion_MansionAPI.Controllers
         {
             if (id == 0)
             {
-                _logger.LogError("Get mansion error with id " + id);
+                //Main logger//_logger.LogError("Get mansion error with id " + id);
+                //Custom logger//_logger.Log("Get mansion error with id " + id,"error");
                 return BadRequest();
             }
             var Mansion = MansionStore.masionList.FirstOrDefault(u => u.Id == id);
