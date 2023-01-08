@@ -4,6 +4,7 @@ using MagicMansion_MansionAPI.Models;
 using MagicMansion_MansionAPI.Models.Dto;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace MagicMansion_MansionAPI.Controllers
 {
@@ -23,13 +24,20 @@ namespace MagicMansion_MansionAPI.Controllers
         //{
         //    _logger= logger;
         //}
+
+        private readonly ApplicationDbContext _db;
+        public MansionAPIController(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<MansionDTO>> GetMansions()
         {
             //Main logger//_logger.LogInformation("Geting all mansions");
             //Custom logger//_logger.Log("Geting all mansions","");
-            return Ok(MansionStore.masionList);
+            return Ok(_db.Mansions.ToList());
         }
 
         [HttpGet("{id:int}", Name = "GetMansion")]
@@ -44,7 +52,7 @@ namespace MagicMansion_MansionAPI.Controllers
                 //Custom logger//_logger.Log("Get mansion error with id " + id,"error");
                 return BadRequest();
             }
-            var Mansion = MansionStore.masionList.FirstOrDefault(u => u.Id == id);
+            var Mansion = _db.Mansions.FirstOrDefault(u => u.Id == id);
 
             if (Mansion == null)
             {
@@ -62,7 +70,7 @@ namespace MagicMansion_MansionAPI.Controllers
             //{
             //    return BadRequest(ModelState);
             //}
-            if (MansionStore.masionList.FirstOrDefault(u => u.Name.ToLower() == mansionDTO.Name.ToLower()) != null)
+            if (_db.Mansions.FirstOrDefault(u => u.Name.ToLower() == mansionDTO.Name.ToLower()) != null)
             {
                 ModelState.AddModelError("Custom error", "Mansion already exists");
                 return BadRequest(ModelState);
@@ -75,8 +83,21 @@ namespace MagicMansion_MansionAPI.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            mansionDTO.Id = MansionStore.masionList.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
-            MansionStore.masionList.Add(mansionDTO);
+ 
+            Mansion model = new()
+            {
+                Amenity = mansionDTO.Amenity,
+                Details= mansionDTO.Details,
+                Id = mansionDTO.Id,
+                ImageUrl= mansionDTO.ImageUrl,
+                Name = mansionDTO.Name,
+                Occupancy= mansionDTO.Occupancy,
+                Rate= mansionDTO.Rate,
+                Sqft= mansionDTO.Sqft,
+
+            };
+            _db.Mansions.Add(model);
+            _db.SaveChanges();
             return CreatedAtRoute("GetMansion", new { id = mansionDTO.Id }, mansionDTO);
         }
         [HttpDelete("{id:int}", Name = "DeleteMansion")]
@@ -86,9 +107,10 @@ namespace MagicMansion_MansionAPI.Controllers
         public IActionResult DeleteMansion(int id)
         {
             if (id == 0) return BadRequest();
-            var mansion = MansionStore.masionList.FirstOrDefault(u => u.Id == id);
+            var mansion = _db.Mansions.FirstOrDefault(u => u.Id == id);
             if (mansion == null) return NotFound();
-            MansionStore.masionList.Remove(mansion);
+            _db.Mansions.Remove(mansion);
+            _db.SaveChanges();
             return NoContent();
         }
         [HttpPut("{id:int}", Name = "UpdateMansion")]
@@ -97,10 +119,25 @@ namespace MagicMansion_MansionAPI.Controllers
         public IActionResult UpdateMansion(int id,[FromBody] MansionDTO mansionDTO)
         {
             if(mansionDTO == null || id != mansionDTO.Id) return BadRequest();
-            var mansion = MansionStore.masionList.FirstOrDefault(u=>u.Id==id);
-            mansion.Name = mansionDTO.Name;
-            mansion.Sqft= mansionDTO.Sqft;
-            mansion.Occupancy = mansionDTO.Occupancy;
+            //var mansion = _db.Mansions.FirstOrDefault(u=>u.Id==id);
+            //mansion.Name = mansionDTO.Name;
+            //mansion.Sqft= mansionDTO.Sqft;
+            //mansion.Occupancy = mansionDTO.Occupancy;
+
+            Mansion model = new()
+            {
+                Amenity = mansionDTO.Amenity,
+                Details = mansionDTO.Details,
+                Id = mansionDTO.Id,
+                ImageUrl = mansionDTO.ImageUrl,
+                Name = mansionDTO.Name,
+                Occupancy = mansionDTO.Occupancy,
+                Rate = mansionDTO.Rate,
+                Sqft = mansionDTO.Sqft,
+
+            };
+            _db.Mansions.Update(model);
+            _db.SaveChanges();
             return NoContent();
         }
         [HttpPatch("{id:int}", Name = "UpdatePartialMansion")]
@@ -109,10 +146,40 @@ namespace MagicMansion_MansionAPI.Controllers
         public IActionResult UpdatePartialMansion(int id, JsonPatchDocument<MansionDTO> patchDTO)
         {
             if(patchDTO == null || id==0) return BadRequest();
-            var mansion = MansionStore.masionList.FirstOrDefault(u=>u.Id==id);
-            if(mansion == null) return BadRequest();
-            patchDTO.ApplyTo(mansion,ModelState);
-            if(!ModelState.IsValid) return BadRequest(ModelState);
+
+            var mansion = _db.Mansions.AsNoTracking().FirstOrDefault(u=>u.Id==id);
+
+            MansionDTO mansionDTO = new()
+            {
+                Amenity = mansion.Amenity,
+                Details = mansion.Details,
+                Id = mansion.Id,
+                ImageUrl = mansion.ImageUrl,
+                Name = mansion.Name,
+                Occupancy = mansion.Occupancy,
+                Rate = mansion.Rate,
+                Sqft = mansion.Sqft,
+
+            };
+
+            if (mansion == null) return BadRequest();
+            patchDTO.ApplyTo(mansionDTO,ModelState);
+
+            Mansion model = new()
+            {
+                Amenity = mansionDTO.Amenity,
+                Details = mansionDTO.Details,
+                Id = mansionDTO.Id,
+                ImageUrl = mansionDTO.ImageUrl,
+                Name = mansionDTO.Name,
+                Occupancy = mansionDTO.Occupancy,
+                Rate = mansionDTO.Rate,
+                Sqft = mansionDTO.Sqft,
+
+            };
+            _db.Mansions.Update(model);
+            _db.SaveChanges();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             return NoContent();
         }
     }
