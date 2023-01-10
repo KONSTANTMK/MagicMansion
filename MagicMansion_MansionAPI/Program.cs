@@ -1,5 +1,8 @@
+using MagicMansion_MansionAPI;
 using MagicMansion_MansionAPI.Data;
 using MagicMansion_MansionAPI.Logging;
+using MagicMansion_MansionAPI.Repository;
+using MagicMansion_MansionAPI.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +16,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
+builder.Services.AddScoped<IMansionRepository,MansionRepository>();
+builder.Services.AddAutoMapper(typeof(MappingConfig));
 
 builder.Services.AddControllers(option =>
 {
