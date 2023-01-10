@@ -16,11 +16,13 @@ namespace MagicMansion_MansionAPI.Controllers
     public class MansionNumberAPIController : ControllerBase
     {
         private readonly IMansionNumberRepository _dbMansionNumber;
+        private readonly IMansionRepository _dbMansion;
         private readonly IMapper _mapper;
 		private readonly APIResponse _response;
-		public MansionNumberAPIController(IMansionNumberRepository dbMansionNumber, IMapper mapper)
+		public MansionNumberAPIController(IMansionNumberRepository dbMansionNumber,IMansionRepository dbMansion, IMapper mapper)
         {
 			_dbMansionNumber = dbMansionNumber;
+            _dbMansion = dbMansion;
             _mapper = mapper;
             this._response = new();
         }
@@ -90,6 +92,13 @@ namespace MagicMansion_MansionAPI.Controllers
                 ModelState.AddModelError("Custom error", "Mansion number already exists");
                 return BadRequest(ModelState);
             }
+
+            if(await _dbMansion.GetAsync(u=>u.Id==createDTO.MansionID) == null)
+            {
+				ModelState.AddModelError("Custom error", "Mansion ID is invalid");
+				return BadRequest(ModelState);
+			}
+
             if (createDTO == null)
             {
                 return BadRequest();
@@ -142,7 +151,13 @@ namespace MagicMansion_MansionAPI.Controllers
             {
             if(updateDTO == null || id != updateDTO.MansionNo) return BadRequest();
 
-			MansionNumber model = _mapper.Map<MansionNumber>(updateDTO);
+				if (await _dbMansion.GetAsync(u => u.Id == updateDTO.MansionID) == null)
+				{
+					ModelState.AddModelError("Custom error", "Mansion ID is invalid");
+					return BadRequest(ModelState);
+				}
+
+				MansionNumber model = _mapper.Map<MansionNumber>(updateDTO);
 			await _dbMansionNumber.UpdateAsync(model);
 			_response.StatusCode = HttpStatusCode.NoContent;
             _response.IsSuccess= true;
