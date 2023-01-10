@@ -12,6 +12,10 @@ namespace MagicMansion_MansionAPI
 			CreateMap<MansionDTO, Mansion>();
 			CreateMap<Mansion, MansionCreateDTO>().ReverseMap();
 			CreateMap<Mansion, MansionUpdateDTO>().ReverseMap();
+
+			CreateMap<MansionNumber, MansionNumberDTO>().ReverseMap();
+			CreateMap<MansionNumber, MansionNumberCreateDTO>().ReverseMap();
+			CreateMap<MansionNumber, MansionNumberUpdateDTO>().ReverseMap();
 		}
 	}
 }

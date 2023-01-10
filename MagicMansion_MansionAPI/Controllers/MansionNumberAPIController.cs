@@ -11,28 +11,28 @@ using System.Net;
 
 namespace MagicMansion_MansionAPI.Controllers
 {
-    [Route("api/MansionAPI")]
+    [Route("api/MansionNumberAPI")]
     [ApiController]
-    public class MansionAPIController : ControllerBase
+    public class MansionNumberAPIController : ControllerBase
     {
-        private readonly IMansionRepository _dbMansion;
+        private readonly IMansionNumberRepository _dbMansionNumber;
         private readonly IMapper _mapper;
 		private readonly APIResponse _response;
-		public MansionAPIController(IMansionRepository dbMansion,IMapper mapper)
+		public MansionNumberAPIController(IMansionNumberRepository dbMansionNumber, IMapper mapper)
         {
-            _dbMansion = dbMansion;
+			_dbMansionNumber = dbMansionNumber;
             _mapper = mapper;
             this._response = new();
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<APIResponse>> GetMansions()
+        public async Task<ActionResult<APIResponse>> GetMansionNumbers()
         {
             try
             {
-                IEnumerable<Mansion> mansionList = await _dbMansion.GetAllAsync();
-                _response.Result = _mapper.Map<List<MansionDTO>>(mansionList);
+                IEnumerable<MansionNumber> mansionNumberList = await _dbMansionNumber.GetAllAsync();
+                _response.Result = _mapper.Map<List<MansionNumberDTO>>(mansionNumberList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
             }
@@ -44,11 +44,11 @@ namespace MagicMansion_MansionAPI.Controllers
             return _response;
 		}
 
-        [HttpGet("{id:int}", Name = "GetMansion")]
+        [HttpGet("{id:int}", Name = "GetMansionNumber")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetMansion(int id)
+        public async Task<ActionResult<APIResponse>> GetMansionNumber(int id)
         {
             try
             {
@@ -57,14 +57,14 @@ namespace MagicMansion_MansionAPI.Controllers
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
-                var mansion = await _dbMansion.GetAsync(u => u.Id == id);
+                var mansionNumber = await _dbMansionNumber.GetAsync(u => u.MansionNo == id);
 
-                if (mansion == null)
+                if (mansionNumber == null)
                 {
 					_response.StatusCode = HttpStatusCode.NotFound;
 					return NotFound(_response);
                 }
-			    _response.Result = _mapper.Map<MansionDTO>(mansion);
+			    _response.Result = _mapper.Map<MansionNumberDTO>(mansionNumber);
 			    _response.StatusCode = HttpStatusCode.OK;
 			    return Ok(_response);
 			}
@@ -81,13 +81,13 @@ namespace MagicMansion_MansionAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<APIResponse>> CreateMansion([FromBody] MansionCreateDTO createDTO)
+        public async Task<ActionResult<APIResponse>> CreateMansionNumber([FromBody] MansionNumberCreateDTO createDTO)
         {
             try
             { 
-            if (await _dbMansion.GetAsync(u => u.Name.ToLower() == createDTO.Name.ToLower()) != null)
+            if (await _dbMansionNumber.GetAsync(u => u.MansionNo == createDTO.MansionNo) != null)
             {
-                ModelState.AddModelError("Custom error", "Mansion already exists");
+                ModelState.AddModelError("Custom error", "Mansion number already exists");
                 return BadRequest(ModelState);
             }
             if (createDTO == null)
@@ -95,11 +95,11 @@ namespace MagicMansion_MansionAPI.Controllers
                 return BadRequest();
             }
 
-            Mansion model = _mapper.Map<Mansion>(createDTO);
-            await _dbMansion.CreateAsync(model);
-			_response.Result = _mapper.Map<MansionDTO>(model);
+			MansionNumber model = _mapper.Map<MansionNumber>(createDTO);
+            await _dbMansionNumber.CreateAsync(model);
+			_response.Result = _mapper.Map<MansionNumberDTO>(model);
 			_response.StatusCode = HttpStatusCode.Created;
-			return CreatedAtRoute("GetMansion", new { id = model.Id }, _response);
+			return CreatedAtRoute("GetMansion", new { id = model.MansionNo }, _response);
 			}
 			catch (Exception ex)
 			{
@@ -109,19 +109,19 @@ namespace MagicMansion_MansionAPI.Controllers
 			}
 			return _response;
 		}
-        [HttpDelete("{id:int}", Name = "DeleteMansion")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpDelete("{id:int}", Name = "DeleteMansionNumber")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> DeleteMansion(int id)
+        public async Task<ActionResult<APIResponse>> DeleteMansionNumber(int id)
         {
             try
             { 
             if (id == 0) return BadRequest();
-            var mansion = await _dbMansion.GetAsync(u => u.Id == id);
-            if (mansion == null) return NotFound();
-			await _dbMansion.RemoveAsync(mansion);
-			_response.Result = _mapper.Map<MansionDTO>(mansion);
+            var mansionNumber = await _dbMansionNumber.GetAsync(u => u.MansionNo == id);
+            if (mansionNumber == null) return NotFound();
+			await _dbMansionNumber.RemoveAsync(mansionNumber);
+			_response.Result = _mapper.Map<MansionNumberDTO>(mansionNumber);
 			_response.StatusCode = HttpStatusCode.NoContent;
 			return Ok(_response);
 			}
@@ -133,17 +133,17 @@ namespace MagicMansion_MansionAPI.Controllers
 			}
 			return _response;
 		}
-        [HttpPut("{id:int}", Name = "UpdateMansion")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpPut("{id:int}", Name = "UpdateMansionNumber")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> UpdateMansion(int id,[FromBody] MansionUpdateDTO updateDTO)
+        public async Task<ActionResult<APIResponse>> UpdateMansionNumber(int id,[FromBody] MansionNumberUpdateDTO updateDTO)
         {
             try
             {
-            if(updateDTO == null || id != updateDTO.Id) return BadRequest();
+            if(updateDTO == null || id != updateDTO.MansionNo) return BadRequest();
 
-			Mansion model = _mapper.Map<Mansion>(updateDTO);
-			await _dbMansion.UpdateAsync(model);
+			MansionNumber model = _mapper.Map<MansionNumber>(updateDTO);
+			await _dbMansionNumber.UpdateAsync(model);
 			_response.StatusCode = HttpStatusCode.NoContent;
             _response.IsSuccess= true;
 			return Ok(_response);
@@ -156,24 +156,6 @@ namespace MagicMansion_MansionAPI.Controllers
 			}
 			return _response;
 		}
-        [HttpPatch("{id:int}", Name = "UpdatePartialMansion")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdatePartialMansion(int id, JsonPatchDocument<MansionUpdateDTO> patchDTO)
-        {
-            if(patchDTO == null || id==0) return BadRequest();
-
-            var mansion = await _dbMansion.GetAsync(u=>u.Id==id,tracked:false);
-
-			MansionUpdateDTO mansionDTO = _mapper.Map<MansionUpdateDTO>(mansion);
-
-            if (mansion == null) return BadRequest();
-            patchDTO.ApplyTo(mansionDTO,ModelState);
-
-			Mansion model = _mapper.Map<Mansion>(mansionDTO);
-            await _dbMansion.UpdateAsync(model);
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            return NoContent();
-        }
+       
     }
 }

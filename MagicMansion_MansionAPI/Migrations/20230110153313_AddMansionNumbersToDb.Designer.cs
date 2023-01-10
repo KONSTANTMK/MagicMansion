@@ -4,6 +4,7 @@ using MagicMansion_MansionAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MagicMansionMansionAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230110153313_AddMansionNumbersToDb")]
+    partial class AddMansionNumbersToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,7 +69,7 @@ namespace MagicMansionMansionAPI.Migrations
                         {
                             Id = 1,
                             Amenity = "",
-                            CreatedDate = new DateTime(2023, 1, 10, 21, 38, 6, 775, DateTimeKind.Local).AddTicks(9680),
+                            CreatedDate = new DateTime(2023, 1, 10, 21, 33, 13, 54, DateTimeKind.Local).AddTicks(7977),
                             Details = "Fusce 11 tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
                             ImageUrl = "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa3.jpg",
                             Name = "Royal Villa",
@@ -79,7 +82,7 @@ namespace MagicMansionMansionAPI.Migrations
                         {
                             Id = 2,
                             Amenity = "",
-                            CreatedDate = new DateTime(2023, 1, 10, 21, 38, 6, 775, DateTimeKind.Local).AddTicks(9689),
+                            CreatedDate = new DateTime(2023, 1, 10, 21, 33, 13, 54, DateTimeKind.Local).AddTicks(7987),
                             Details = "Fusce 11 tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
                             ImageUrl = "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa1.jpg",
                             Name = "Premium Pool Villa",
@@ -92,7 +95,7 @@ namespace MagicMansionMansionAPI.Migrations
                         {
                             Id = 3,
                             Amenity = "",
-                            CreatedDate = new DateTime(2023, 1, 10, 21, 38, 6, 775, DateTimeKind.Local).AddTicks(9691),
+                            CreatedDate = new DateTime(2023, 1, 10, 21, 33, 13, 54, DateTimeKind.Local).AddTicks(7989),
                             Details = "Fusce 11 tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
                             ImageUrl = "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa4.jpg",
                             Name = "Luxury Pool Villa",
@@ -105,7 +108,7 @@ namespace MagicMansionMansionAPI.Migrations
                         {
                             Id = 4,
                             Amenity = "",
-                            CreatedDate = new DateTime(2023, 1, 10, 21, 38, 6, 775, DateTimeKind.Local).AddTicks(9693),
+                            CreatedDate = new DateTime(2023, 1, 10, 21, 33, 13, 54, DateTimeKind.Local).AddTicks(7990),
                             Details = "Fusce 11 tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
                             ImageUrl = "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa5.jpg",
                             Name = "Diamond Villa",
@@ -118,7 +121,7 @@ namespace MagicMansionMansionAPI.Migrations
                         {
                             Id = 5,
                             Amenity = "",
-                            CreatedDate = new DateTime(2023, 1, 10, 21, 38, 6, 775, DateTimeKind.Local).AddTicks(9694),
+                            CreatedDate = new DateTime(2023, 1, 10, 21, 33, 13, 54, DateTimeKind.Local).AddTicks(7992),
                             Details = "Fusce 11 tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
                             ImageUrl = "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa2.jpg",
                             Name = "Diamond Pool Villa",
@@ -131,11 +134,14 @@ namespace MagicMansionMansionAPI.Migrations
 
             modelBuilder.Entity("MagicMansion_MansionAPI.Models.MansionNumber", b =>
                 {
-                    b.Property<int>("MansionNo")
+                    b.Property<int>("VillaNo")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("MansionId")
+                        .HasColumnType("int");
 
                     b.Property<string>("SpecialDetails")
                         .HasColumnType("nvarchar(max)");
@@ -143,9 +149,23 @@ namespace MagicMansionMansionAPI.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("MansionNo");
+                    b.Property<int>("VillaID")
+                        .HasColumnType("int");
+
+                    b.HasKey("VillaNo");
+
+                    b.HasIndex("MansionId");
 
                     b.ToTable("MansionNumbers");
+                });
+
+            modelBuilder.Entity("MagicMansion_MansionAPI.Models.MansionNumber", b =>
+                {
+                    b.HasOne("MagicMansion_MansionAPI.Models.Mansion", "Mansion")
+                        .WithMany()
+                        .HasForeignKey("MansionId");
+
+                    b.Navigation("Mansion");
                 });
 #pragma warning restore 612, 618
         }
