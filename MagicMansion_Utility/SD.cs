@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MagicMansion_Utility
 {
-	internal class SD
+	public static class SD
 	{
 		public enum ApiType
 		{

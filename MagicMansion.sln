@@ -5,7 +5,9 @@ VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MagicMansion_MansionAPI", "MagicMansion_MansionAPI\MagicMansion_MansionAPI.csproj", "{9A676B20-7403-4E52-8904-7C29C0D1D2E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicMansion_Web", "MagicMansion_Web\MagicMansion_Web.csproj", "{846042BD-7A6C-4CFD-B3CE-DF15BE57CC5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MagicMansion_Web", "MagicMansion_Web\MagicMansion_Web.csproj", "{846042BD-7A6C-4CFD-B3CE-DF15BE57CC5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicMansion_Utility", "MagicMansion_Utility\MagicMansion_Utility.csproj", "{6D4D927C-DD43-4DAD-BBE8-3090BD191DCC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{846042BD-7A6C-4CFD-B3CE-DF15BE57CC5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{846042BD-7A6C-4CFD-B3CE-DF15BE57CC5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{846042BD-7A6C-4CFD-B3CE-DF15BE57CC5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D4D927C-DD43-4DAD-BBE8-3090BD191DCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D4D927C-DD43-4DAD-BBE8-3090BD191DCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D4D927C-DD43-4DAD-BBE8-3090BD191DCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D4D927C-DD43-4DAD-BBE8-3090BD191DCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
