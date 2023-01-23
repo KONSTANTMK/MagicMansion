@@ -12,7 +12,7 @@ namespace MagicMansion_Web.Services
 		public MansionService(IHttpClientFactory clientFactory,IConfiguration configuration):base(clientFactory)
 		{
 			_clientFactory= clientFactory;
-			mansionUrl = configuration.GetValue<string>("ServiceUrls:MansionAPI");
+			mansionUrl = configuration.GetValue<string>("ServiceUrls:MansionApi");
 		}
 		public Task<T> CreateAsync<T>(MansionCreateDTO dto)
 		{

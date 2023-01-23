@@ -1,4 +1,8 @@
-﻿@model IEnumerable<MagicMansion_Web.Models.Dto.MansionDTO>
+﻿@using System.Globalization;
+@{
+    ViewData["Title"] = "Mansions";
+}
+@model IEnumerable<MagicMansion_Web.Models.Dto.MansionDTO>
 <br/>
 <div class="container p-4 border">
     <div class="row pb-2">
@@ -6,7 +10,7 @@
             <h1 class="text-primary">Mansion List</h1>
         </div>
         <div class="col text-end pt-1">
-            <a class="btn btn-outline-primary"><i class="bi bi-plus-square-fill"></i>Create New Mansion</a>
+            <a asp-controller="Mansion" asp-action="CreateMansion" class="btn btn-outline-primary"><i class="bi bi-plus-square-fill"></i> Create New Mansion</a>
         </div>
     </div>
     <table class="table">
@@ -30,8 +34,12 @@
                 <tr>
                     <td>@item.Name</td>
                     <td>@item.Occupancy</td>
-                    <td>@(item.Rate).ToString("c")</td>
-                    <td></td>
+                    <td>@(item.Rate.ToString("C", CultureInfo.CreateSpecificCulture("en-US")))</td>
+                    <td>
+                        <a asp-controller="Mansion" asp-action="UpdateMansion" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
+                        <a asp-controller="Mansion" asp-action="DeleteMansion" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+
+                    </td>
                 </tr>
             }
         </tbody>
