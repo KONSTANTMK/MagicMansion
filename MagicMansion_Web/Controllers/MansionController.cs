@@ -50,5 +50,65 @@ namespace MagicMansion_Web.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> UpdateMansion(int mansionId)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _mansionService.GetAsync<APIResponse>(mansionId);
+                if (response != null && response.IsSuccess)
+                {
+                    MansionDTO model = JsonConvert.DeserializeObject<MansionDTO>(Convert.ToString(response.Result));
+                    return View(_mapper.Map<MansionUpdateDTO>(model));
+                }
+                return NotFound();
+
+            }
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateMansion(MansionUpdateDTO model)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _mansionService.UpdateAsync<APIResponse>(model);
+                if (response != null && response.IsSuccess)
+                {
+                    return RedirectToAction(nameof(IndexMansion));
+                }
+            }
+
+            return View(model);
+        }
+        public async Task<IActionResult> DeleteMansion(int mansionId)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _mansionService.GetAsync<APIResponse>(mansionId);
+                if (response != null && response.IsSuccess)
+                {
+                    MansionDTO model = JsonConvert.DeserializeObject<MansionDTO>(Convert.ToString(response.Result));
+                    return View(model);
+                }
+                return NotFound();
+
+            }
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteMansion(MansionDTO model)
+        {
+            var response = await _mansionService.DeleteAsync<APIResponse>(model.Id);
+            if (response != null && response.IsSuccess)
+            {
+                return RedirectToAction(nameof(IndexMansion));
+            }
+
+
+
+            return View(model);
+        }
     }
 }
