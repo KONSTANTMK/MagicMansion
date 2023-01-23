@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MagicMansion_Web.Models.Dto;
+using MagicMansion_Web.Models;
 
 namespace MagicMansion_Web
 {
@@ -10,12 +11,8 @@ namespace MagicMansion_Web
 			CreateMap<MansionDTO, MansionCreateDTO>().ReverseMap();
 			CreateMap<MansionDTO, MansionUpdateDTO>().ReverseMap();
 
-			CreateMap<Mansion, MansionCreateDTO>().ReverseMap();
-			CreateMap<Mansion, MansionUpdateDTO>().ReverseMap();
-
-			CreateMap<MansionNumber, MansionNumberDTO>().ReverseMap();
-			CreateMap<MansionNumber, MansionNumberCreateDTO>().ReverseMap();
-			CreateMap<MansionNumber, MansionNumberUpdateDTO>().ReverseMap();
+			CreateMap<MansionNumberDTO, MansionNumberCreateDTO>().ReverseMap();
+			CreateMap<MansionNumberDTO, MansionNumberUpdateDTO>().ReverseMap();
 		}
 	}
 }
