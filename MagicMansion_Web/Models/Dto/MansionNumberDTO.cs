@@ -9,6 +9,7 @@ namespace MagicMansion_Web.Models.Dto
 		[Required]
 		public int MansionID { get; set; }
 		public string SpecialDetails { get; set; }
+        public MansionDTO Mansion { get; set; }
     
     }
 }

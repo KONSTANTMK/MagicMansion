@@ -33,7 +33,7 @@ namespace MagicMansion_MansionAPI.Controllers
         {
             try
             {
-                IEnumerable<MansionNumber> mansionNumberList = await _dbMansionNumber.GetAllAsync();
+                IEnumerable<MansionNumber> mansionNumberList = await _dbMansionNumber.GetAllAsync(includeProperties:"Mansion");
                 _response.Result = _mapper.Map<List<MansionNumberDTO>>(mansionNumberList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
