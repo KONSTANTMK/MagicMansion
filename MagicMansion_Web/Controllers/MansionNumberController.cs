@@ -61,7 +61,14 @@ namespace MagicMansion_Web.Controllers
 				{
 					return RedirectToAction(nameof(IndexMansionNumber));
 				}
-			}
+                else
+                {
+                    if (response.ErrorMessages.Count > 0)
+                    {
+                        ModelState.AddModelError("ErrorMessages", response.ErrorMessages.FirstOrDefault());
+                    }
+                }
+            }
 
          ;
             var resp = await _mansionService.GetAllAsync<APIResponse>();
