@@ -84,64 +84,95 @@ namespace MagicMansion_Web.Controllers
             return View(model);
 		}
 
-		//public async Task<IActionResult> UpdateMansionNumber(int mansionId)
-		//{
-		//	if (ModelState.IsValid)
-		//	{
-		//		var response = await _mansionNumberService.GetAsync<APIResponse>(mansionId);
-		//		if (response != null && response.IsSuccess)
-		//		{
-		//			MansionNumberDTO model = JsonConvert.DeserializeObject<MansionNumberDTO>(Convert.ToString(response.Result));
-		//			return View(_mapper.Map<MansionNumberUpdateDTO>(model));
-		//		}
-		//		return NotFound();
+		public async Task<IActionResult> UpdateMansionNumber(int mansionId)
+		{
+            MansionNumberUpdateVM mansionNumberVM = new();
+            if (ModelState.IsValid)
+			{
+				var response = await _mansionNumberService.GetAsync<APIResponse>(mansionId);
+				if (response != null && response.IsSuccess)
+				{
+					MansionNumberDTO model = JsonConvert.DeserializeObject<MansionNumberDTO>(Convert.ToString(response.Result));
+					mansionNumberVM.MansionNumber = _mapper.Map<MansionNumberUpdateDTO>(model);
+				}
+                response = await _mansionService.GetAllAsync<APIResponse>();
+                if (response != null && response.IsSuccess)
+                {
+                    mansionNumberVM.MansionList = JsonConvert.DeserializeObject<List<MansionDTO>>
+                        (Convert.ToString(response.Result)).Select(i => new SelectListItem
+                        {
+                            Text = i.Name,
+                            Value = i.Id.ToString()
+                        });
+					return View(mansionNumberVM);
+                }
 
-		//	}
-		//	return View();
-		//}
-		//[HttpPost]
-		//[ValidateAntiForgeryToken]
-		//public async Task<IActionResult> UpdateMansionNumber(MansionNumberUpdateDTO model)
-		//{
-		//	if (ModelState.IsValid)
-		//	{
-		//		var response = await _mansionNumberService.UpdateAsync<APIResponse>(model);
-		//		if (response != null && response.IsSuccess)
-		//		{
-		//			return RedirectToAction(nameof(IndexMansionNumber));
-		//		}
-		//	}
+                return NotFound();
 
-		//	return View(model);
-		//}
-		//public async Task<IActionResult> DeleteMansionNumber(int mansionId)
-		//{
-		//	if (ModelState.IsValid)
-		//	{
-		//		var response = await _mansionNumberService.GetAsync<APIResponse>(mansionId);
-		//		if (response != null && response.IsSuccess)
-		//		{
-		//			MansionNumberDTO model = JsonConvert.DeserializeObject<MansionNumberDTO>(Convert.ToString(response.Result));
-		//			return View(model);
-		//		}
-		//		return NotFound();
+			}
+			return View();
+		}
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> UpdateMansionNumber(MansionNumberUpdateVM model)
+		{
+            if (ModelState.IsValid)
+            {
+                var response = await _mansionNumberService.UpdateAsync<APIResponse>(model.MansionNumber);
+                if (response != null && response.IsSuccess)
+                {
+                    return RedirectToAction(nameof(IndexMansionNumber));
+                }
+                else
+                {
+                    if (response.ErrorMessages.Count > 0)
+                    {
+                        ModelState.AddModelError("ErrorMessages", response.ErrorMessages.FirstOrDefault());
+                    }
+                }
+            }
 
-		//	}
-		//	return View();
-		//}
-		//[HttpPost]
-		//[ValidateAntiForgeryToken]
-		//public async Task<IActionResult> DeleteMansionNumber(MansionNumberDTO model)
-		//{
-		//	var response = await _mansionNumberService.DeleteAsync<APIResponse>(model.Id);
-		//	if (response != null && response.IsSuccess)
-		//	{
-		//		return RedirectToAction(nameof(IndexMansionNumber));
-		//	}
+         ;
+            var resp = await _mansionService.GetAllAsync<APIResponse>();
+            if (resp != null && resp.IsSuccess)
+            {
+                model.MansionList = JsonConvert.DeserializeObject<List<MansionDTO>>
+                    (Convert.ToString(resp.Result)).Select(i => new SelectListItem
+                    {
+                        Text = i.Name,
+                        Value = i.Id.ToString()
+                    });
+            }
+            return View(model);
+        }
+        public async Task<IActionResult> DeleteMansionNumber(int mansionId)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _mansionNumberService.GetAsync<APIResponse>(mansionId);
+                if (response != null && response.IsSuccess)
+                {
+                    MansionNumberDTO model = JsonConvert.DeserializeObject<MansionNumberDTO>(Convert.ToString(response.Result));
+                    return View(model);
+                }
+                return NotFound();
+
+            }
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteMansionNumber(MansionNumberDeleteVM model)
+        {
+            var response = await _mansionNumberService.DeleteAsync<APIResponse>(model.MansionNumber.MansionNo);
+            if (response != null && response.IsSuccess)
+            {
+                return RedirectToAction(nameof(IndexMansionNumber));
+            }
 
 
 
-		//	return View(model);
-		//}
-	}
+            return View(model);
+        }
+    }
 }
