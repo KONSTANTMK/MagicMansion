@@ -37,10 +37,14 @@ namespace MagicMansion_MansionAPI.Repository
 
             if (user == null)
             {
-                return null;
+                return new LoginResponseDTO()
+                {
+                    Token = "",
+                    User = null
+                };
             }
 
-            //if user was found generate JWT Token
+            //JWT Token
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(secretKey);

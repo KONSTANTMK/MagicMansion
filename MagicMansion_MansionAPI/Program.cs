@@ -3,6 +3,7 @@ using MagicMansion_MansionAPI.Data;
 using MagicMansion_MansionAPI.Logging;
 using MagicMansion_MansionAPI.Repository;
 using MagicMansion_MansionAPI.Repository.IRepository;
+using MagicMansion_MansionAPI.Repository.IRepostiory;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 builder.Services.AddScoped<IMansionNumberRepository,MansionNumberRepository>();
 builder.Services.AddScoped<IMansionRepository, MansionRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
 builder.Services.AddControllers(option =>
