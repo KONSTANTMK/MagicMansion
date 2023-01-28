@@ -11,6 +11,7 @@ namespace MagicMansion_MansionAPI.Data
         }
         public DbSet<Mansion> Mansions { get; set; }
 		public DbSet<MansionNumber> MansionNumbers { get; set; }
+        public DbSet<LocalUser> LocalUsers { get; set; }
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Mansion>().HasData(
