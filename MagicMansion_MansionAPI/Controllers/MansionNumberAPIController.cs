@@ -126,13 +126,15 @@ namespace MagicMansion_MansionAPI.Controllers
         {
             try
             { 
-            if (id == 0) return BadRequest();
-            var mansionNumber = await _dbMansionNumber.GetAsync(u => u.MansionNo == id);
-            if (mansionNumber == null) return NotFound();
-			await _dbMansionNumber.RemoveAsync(mansionNumber);
-			_response.Result = _mapper.Map<MansionNumberDTO>(mansionNumber);
-			_response.StatusCode = HttpStatusCode.NoContent;
-			return Ok(_response);
+                if (id == 0) return BadRequest();
+                var mansionNumber = await _dbMansionNumber.GetAsync(u => u.MansionNo == id);
+                if (mansionNumber == null) return NotFound();
+			    await _dbMansionNumber.RemoveAsync(mansionNumber);
+                _response.StatusCode = HttpStatusCode.NoContent;
+                _response.IsSuccess = true;
+                _response.Result = _mapper.Map<MansionNumberDTO>(mansionNumber);
+		    
+			    return Ok(_response);
 			}
 			catch (Exception ex)
 			{
@@ -157,7 +159,7 @@ namespace MagicMansion_MansionAPI.Controllers
 					return BadRequest(ModelState);
 				}
 
-				MansionNumber model = _mapper.Map<MansionNumber>(updateDTO);
+			MansionNumber model = _mapper.Map<MansionNumber>(updateDTO);
 			await _dbMansionNumber.UpdateAsync(model);
 			_response.StatusCode = HttpStatusCode.NoContent;
             _response.IsSuccess= true;

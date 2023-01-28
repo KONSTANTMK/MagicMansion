@@ -1,0 +1,50 @@
+﻿@model MagicMansion_Web.Models.VM.MansionNumberUpdateVM
+
+<form asp-action="UpdateMansionNumber">
+    <br />
+    <div class="container border p-3">
+        <h1 class="text-primary">Update Mansion</h1>
+        <hr />
+        
+        <div class="row">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input hidden asp-for="MansionNumber.MansionNo" />
+            <div class="col-2">
+                <label asp-for="MansionNumber.MansionNo" class="control-label pt-2" style="font-size:20px;"></label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="MansionNumber.MansionNo" disabled class="form-control" />
+                <span asp-validation-for="MansionNumber.MansionNo" class="text-danger"></span>
+            </div>
+
+            <div class="col-2">
+                <label asp-for="MansionNumber.MansionID" class="control-label pt-2" style="font-size:20px;"></label>
+            </div>
+            <div class="col-10 pb-3">
+                <select asp-for="MansionNumber.MansionID" class="form-select" asp-items="@Model.MansionList">
+                    <option disabled selected>--Select Mansion--</option>
+                </select>
+                <span asp-validation-for="MansionNumber.MansionID" class="text-danger"></span>
+            </div>
+            <div class="col-2">
+                <label asp-for="MansionNumber.SpecialDetails" class="control-label pt-2" style="font-size:20px;"></label>
+            </div>
+            <div class="col-10 pb-3">
+                <textarea asp-for="MansionNumber.SpecialDetails" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="MansionNumber.SpecialDetails" class="text-danger"></span>
+            </div>
+
+            <div class="col-5 offset-2">
+                <a asp-action="IndexMansionNumber" asp-controller="MansionNumber" class="btn-primary btn form-control ">Back to List</a>
+            </div>
+            <div class="col-5">
+                <input type="submit" value="Update" class="btn btn-success form-control" />
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

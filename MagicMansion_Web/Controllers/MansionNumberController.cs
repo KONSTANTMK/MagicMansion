@@ -84,33 +84,30 @@ namespace MagicMansion_Web.Controllers
             return View(model);
 		}
 
-		public async Task<IActionResult> UpdateMansionNumber(int mansionId)
+		public async Task<IActionResult> UpdateMansionNumber(int mansionNo)
 		{
             MansionNumberUpdateVM mansionNumberVM = new();
-            if (ModelState.IsValid)
-			{
-				var response = await _mansionNumberService.GetAsync<APIResponse>(mansionId);
-				if (response != null && response.IsSuccess)
-				{
-					MansionNumberDTO model = JsonConvert.DeserializeObject<MansionNumberDTO>(Convert.ToString(response.Result));
-					mansionNumberVM.MansionNumber = _mapper.Map<MansionNumberUpdateDTO>(model);
-				}
-                response = await _mansionService.GetAllAsync<APIResponse>();
-                if (response != null && response.IsSuccess)
-                {
-                    mansionNumberVM.MansionList = JsonConvert.DeserializeObject<List<MansionDTO>>
-                        (Convert.ToString(response.Result)).Select(i => new SelectListItem
-                        {
-                            Text = i.Name,
-                            Value = i.Id.ToString()
-                        });
-					return View(mansionNumberVM);
-                }
 
-                return NotFound();
+            var response = await _mansionNumberService.GetAsync<APIResponse>(mansionNo);
+            if (response != null && response.IsSuccess)
+            {
+                MansionNumberDTO model = JsonConvert.DeserializeObject<MansionNumberDTO>(Convert.ToString(response.Result));
+                mansionNumberVM.MansionNumber = _mapper.Map<MansionNumberUpdateDTO>(model);
+            }
+            response = await _mansionService.GetAllAsync<APIResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                mansionNumberVM.MansionList = JsonConvert.DeserializeObject<List<MansionDTO>>
+                    (Convert.ToString(response.Result)).Select(i => new SelectListItem
+                    {
+                        Text = i.Name,
+                        Value = i.Id.ToString()
+                    });
+                return View(mansionNumberVM);
+            }
 
-			}
-			return View();
+            return NotFound();
+
 		}
 		[HttpPost]
 		[ValidateAntiForgeryToken]
@@ -132,7 +129,6 @@ namespace MagicMansion_Web.Controllers
                 }
             }
 
-         ;
             var resp = await _mansionService.GetAllAsync<APIResponse>();
             if (resp != null && resp.IsSuccess)
             {
@@ -145,20 +141,29 @@ namespace MagicMansion_Web.Controllers
             }
             return View(model);
         }
-        public async Task<IActionResult> DeleteMansionNumber(int mansionId)
+        public async Task<IActionResult> DeleteMansionNumber(int mansionNo)
         {
-            if (ModelState.IsValid)
-            {
-                var response = await _mansionNumberService.GetAsync<APIResponse>(mansionId);
-                if (response != null && response.IsSuccess)
-                {
-                    MansionNumberDTO model = JsonConvert.DeserializeObject<MansionNumberDTO>(Convert.ToString(response.Result));
-                    return View(model);
-                }
-                return NotFound();
+            MansionNumberDeleteVM mansionNumberVM = new();
 
+            var response = await _mansionNumberService.GetAsync<APIResponse>(mansionNo);
+            if (response != null && response.IsSuccess)
+            {
+                MansionNumberDTO model = JsonConvert.DeserializeObject<MansionNumberDTO>(Convert.ToString(response.Result));
+                mansionNumberVM.MansionNumber = model;
             }
-            return View();
+            response = await _mansionService.GetAllAsync<APIResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                mansionNumberVM.MansionList = JsonConvert.DeserializeObject<List<MansionDTO>>
+                    (Convert.ToString(response.Result)).Select(i => new SelectListItem
+                    {
+                        Text = i.Name,
+                        Value = i.Id.ToString()
+                    });
+                return View(mansionNumberVM);
+            }
+
+            return NotFound();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -169,9 +174,6 @@ namespace MagicMansion_Web.Controllers
             {
                 return RedirectToAction(nameof(IndexMansionNumber));
             }
-
-
-
             return View(model);
         }
     }

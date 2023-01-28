@@ -13,7 +13,6 @@ namespace MagicMansion_MansionAPI.Repository
 		public Repository(ApplicationDbContext db)
 		{
 			_db = db;
-			_db.MansionNumbers.Include(u => u.Mansion).ToList();
 			this.dbSet = _db.Set<T>();
 		}
 		public async Task CreateAsync(T entity)
