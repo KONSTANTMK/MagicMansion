@@ -2,6 +2,11 @@
 using MagicMansion_MansionAPI.Models.Dto;
 using MagicMansion_MansionAPI.Models;
 using MagicMansion_MansionAPI.Repository.IRepostiory;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+
 
 namespace MagicMansion_MansionAPI.Repository
 {
@@ -36,6 +41,26 @@ namespace MagicMansion_MansionAPI.Repository
             }
 
             //if user was found generate JWT Token
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(secretKey);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role)
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            LoginResponseDTO loginResponseDTO = new LoginResponseDTO()
+            {
+                Token = tokenHandler.WriteToken(token),
+                User = user
+            };
+            return loginResponseDTO;
 
         }
 
