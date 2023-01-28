@@ -1,4 +1,4 @@
-﻿using MagicMansion_MansionAPI.Models.Dto;
+﻿using MagicMansion_Web.Models.Dto;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -8,9 +8,9 @@ namespace MagicMansion_Web.Models.VM
 	{
 		public MansionNumberCreateVM()
 		{
-			MansionNumber = new MansionCreateDTO();
+			MansionNumber = new MansionNumberCreateDTO();
 		}
-		public MansionCreateDTO MansionNumber { get; set; }
+		public MansionNumberCreateDTO MansionNumber { get; set; }
 		[ValidateNever]
 		public IEnumerable<SelectListItem> MansionList { get; set; }
 	}

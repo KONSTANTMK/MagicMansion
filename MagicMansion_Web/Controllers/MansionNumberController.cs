@@ -42,21 +42,21 @@ namespace MagicMansion_Web.Controllers
 			if (response != null && response.IsSuccess)
 			{
 				mansionNumberVM.MansionList = JsonConvert.DeserializeObject<List<MansionDTO>>
-					(Convert.ToString(response.Result)).Select(i =>new SelectListItem
+					(Convert.ToString(response.Result)).Select(i => new SelectListItem
 					{
 						Text = i.Name,
-						Value = i.Id.ToString(),
+						Value = i.Id.ToString()
 					});
 			}
 			return View(mansionNumberVM);
 		}
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> CreateMansionNumber(MansionNumberCreateDTO model)
+		public async Task<IActionResult> CreateMansionNumber(MansionNumberCreateVM model)
 		{
 			if (ModelState.IsValid)
 			{
-				var response = await _mansionNumberService.CreateAsync<APIResponse>(model);
+				var response = await _mansionNumberService.CreateAsync<APIResponse>(model.MansionNumber);
 				if (response != null && response.IsSuccess)
 				{
 					return RedirectToAction(nameof(IndexMansionNumber));

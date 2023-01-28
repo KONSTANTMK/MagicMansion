@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\MansionNumber\CreateMansionNumber.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
   </ItemGroup>
@@ -14,6 +18,18 @@
   <ItemGroup>
     <ProjectReference Include="..\MagicMansion_MansionAPI\MagicMansion_MansionAPI.csproj" />
     <ProjectReference Include="..\MagicMansion_Utility\MagicMansion_Utility.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\MansionNumber\CreateMansionNumber.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\MansionNumber\CreateMansionNumber.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\MansionNumber\CreateMansionNumber.cshtml" />
   </ItemGroup>
 
 </Project>
