@@ -44,10 +44,11 @@ namespace MagicMansion_Web.Controllers
                 var response = await _mansionService.CreateAsync<APIResponse>(model);
                 if (response != null && response.IsSuccess)
 				{
-					return RedirectToAction(nameof(IndexMansion));
+                    TempData["success"] = "Villa created successfully";
+                    return RedirectToAction(nameof(IndexMansion));
                 }
             }
-
+            TempData["error"] = "Error encountered";
             return View(model);
         }
 
@@ -72,13 +73,15 @@ namespace MagicMansion_Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                TempData["success"] = "Villa updated successfully";
                 var response = await _mansionService.UpdateAsync<APIResponse>(model);
                 if (response != null && response.IsSuccess)
                 {
+                    
                     return RedirectToAction(nameof(IndexMansion));
                 }
             }
-
+            TempData["error"] = "Error encountered";
             return View(model);
         }
         public async Task<IActionResult> DeleteMansion(int mansionId)
@@ -103,11 +106,10 @@ namespace MagicMansion_Web.Controllers
             var response = await _mansionService.DeleteAsync<APIResponse>(model.Id);
             if (response != null && response.IsSuccess)
             {
+                TempData["success"] = "Villa deleted successfully";
                 return RedirectToAction(nameof(IndexMansion));
             }
-
-
-
+            TempData["error"] = "Error encountered";
             return View(model);
         }
     }
