@@ -89,13 +89,13 @@ namespace MagicMansion_MansionAPI.Controllers
             { 
             if (await _dbMansionNumber.GetAsync(u => u.MansionNo == createDTO.MansionNo) != null)
             {
-                ModelState.AddModelError("Custom error", "Mansion number already exists");
+                ModelState.AddModelError("ErrorMessages", "Mansion number already exists");
                 return BadRequest(ModelState);
             }
 
             if(await _dbMansion.GetAsync(u=>u.Id==createDTO.MansionID) == null)
             {
-				ModelState.AddModelError("Custom error", "Mansion ID is invalid");
+				ModelState.AddModelError("ErrorMessages", "Mansion ID is invalid");
 				return BadRequest(ModelState);
 			}
 
@@ -153,7 +153,7 @@ namespace MagicMansion_MansionAPI.Controllers
 
 				if (await _dbMansion.GetAsync(u => u.Id == updateDTO.MansionID) == null)
 				{
-					ModelState.AddModelError("Custom error", "Mansion ID is invalid");
+					ModelState.AddModelError("ErrorMessages", "Mansion ID is invalid");
 					return BadRequest(ModelState);
 				}
 

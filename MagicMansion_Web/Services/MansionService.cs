@@ -8,7 +8,7 @@ namespace MagicMansion_Web.Services
 	public class MansionService : BaseService, IMansionService
 	{
 		private readonly IHttpClientFactory _clientFactory;
-		private string mansionUrl;
+		private readonly string mansionUrl;
 		public MansionService(IHttpClientFactory clientFactory,IConfiguration configuration):base(clientFactory)
 		{
 			_clientFactory= clientFactory;

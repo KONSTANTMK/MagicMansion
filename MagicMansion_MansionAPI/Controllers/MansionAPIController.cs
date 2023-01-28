@@ -87,7 +87,7 @@ namespace MagicMansion_MansionAPI.Controllers
             { 
             if (await _dbMansion.GetAsync(u => u.Name.ToLower() == createDTO.Name.ToLower()) != null)
             {
-                ModelState.AddModelError("Custom error", "Mansion already exists");
+                ModelState.AddModelError("ErrorMessages", "Mansion already exists");
                 return BadRequest(ModelState);
             }
             if (createDTO == null)

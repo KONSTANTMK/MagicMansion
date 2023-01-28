@@ -63,7 +63,18 @@ namespace MagicMansion_Web.Controllers
 				}
 			}
 
-			return View(model);
+         ;
+            var resp = await _mansionService.GetAllAsync<APIResponse>();
+            if (resp != null && resp.IsSuccess)
+            {
+                model.MansionList = JsonConvert.DeserializeObject<List<MansionDTO>>
+                    (Convert.ToString(resp.Result)).Select(i => new SelectListItem
+                    {
+                        Text = i.Name,
+                        Value = i.Id.ToString()
+                    });
+            }
+            return View(model);
 		}
 
 		//public async Task<IActionResult> UpdateMansionNumber(int mansionId)
