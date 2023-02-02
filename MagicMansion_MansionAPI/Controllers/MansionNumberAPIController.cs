@@ -13,8 +13,11 @@ using System.Net;
 
 namespace MagicMansion_MansionAPI.Controllers
 {
-    [Route("api/MansionNumberAPI")]
+    [Route("api/v{version:apiVersion}/MansionNumberAPI")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
+   
     public class MansionNumberAPIController : ControllerBase
     {
         private readonly IMansionNumberRepository _dbMansionNumber;
@@ -28,7 +31,7 @@ namespace MagicMansion_MansionAPI.Controllers
             _mapper = mapper;
             this._response = new();
         }
-
+        [MapToApiVersion("1.0")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetMansionNumbers()

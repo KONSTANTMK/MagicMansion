@@ -5,6 +5,7 @@ using MagicMansion_MansionAPI.Repository;
 using MagicMansion_MansionAPI.Repository.IRepository;
 using MagicMansion_MansionAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -31,6 +32,13 @@ builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddApiVersioning(options => {
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ReportApiVersions = true;
+});
+
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
 });
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
@@ -86,8 +94,25 @@ builder.Services.AddSwaggerGen(options => {
             new List<string>()
         }
     });
-
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1.0",
+        Title = "Magic Mansion",
+        Description = "API to manage Mansion",
+        TermsOfService = new Uri("https://example.com/terms"),
+        Contact = new OpenApiContact
+        {
+            Name = "aspkk",
+            Url = new Uri("https://aspkk.com")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Example License",
+            Url = new Uri("https://example.com/license")
+        }
+    });
 });
+
 //builder.Services.AddSingleton<ILogging, Logging>();
 var app = builder.Build();
 
@@ -95,10 +120,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Magic_MansionV1");
+    });
 }
-
-app.UseHttpsRedirection();
+    app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
