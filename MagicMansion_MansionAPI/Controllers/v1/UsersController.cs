@@ -4,7 +4,7 @@ using MagicMansion_MansionAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace MagicMansion_MansionAPI.Controllers
+namespace MagicMansion_MansionAPI.Controllers.v1
 {
     [Route("api/v{version:apiVersion}/UsersAuth")]
     [ApiController]
@@ -16,7 +16,7 @@ namespace MagicMansion_MansionAPI.Controllers
         public UsersController(IUserRepository userRepo)
         {
             _userRepo = userRepo;
-            this._response = new();
+            _response = new();
         }
 
         [HttpPost("login")]

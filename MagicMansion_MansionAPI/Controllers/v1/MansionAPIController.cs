@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
-namespace MagicMansion_MansionAPI.Controllers
+namespace MagicMansion_MansionAPI.Controllers.v1
 {
     [Route("api/v{version:apiVersion}/MansionAPI")]
     [ApiController]
@@ -25,7 +25,7 @@ namespace MagicMansion_MansionAPI.Controllers
         {
             _dbMansion = dbMansion;
             _mapper = mapper;
-            this._response = new();
+            _response = new();
         }
 
         [HttpGet]

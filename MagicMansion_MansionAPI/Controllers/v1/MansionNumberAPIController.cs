@@ -11,12 +11,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Net;
 
-namespace MagicMansion_MansionAPI.Controllers
+namespace MagicMansion_MansionAPI.Controllers.v1
 {
     [Route("api/v{version:apiVersion}/MansionNumberAPI")]
     [ApiController]
     [ApiVersion("1.0")]
-    [ApiVersion("2.0")]
+  
    
     public class MansionNumberAPIController : ControllerBase
     {
@@ -31,7 +31,7 @@ namespace MagicMansion_MansionAPI.Controllers
             _mapper = mapper;
             this._response = new();
         }
-        [MapToApiVersion("1.0")]
+        //[MapToApiVersion("1.0")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetMansionNumbers()
