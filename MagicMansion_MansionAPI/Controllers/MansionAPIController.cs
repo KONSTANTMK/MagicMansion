@@ -3,6 +3,7 @@ using MagicMansion_MansionAPI.Data;
 using MagicMansion_MansionAPI.Models;
 using MagicMansion_MansionAPI.Models.Dto;
 using MagicMansion_MansionAPI.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,7 @@ namespace MagicMansion_MansionAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetMansions()
         {
@@ -78,6 +80,7 @@ namespace MagicMansion_MansionAPI.Controllers
 
 		}
         [HttpPost]
+        [Authorize(Roles ="admin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -113,6 +116,7 @@ namespace MagicMansion_MansionAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "CUSTOM")]
         public async Task<ActionResult<APIResponse>> DeleteMansion(int id)
         {
             try
