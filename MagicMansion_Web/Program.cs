@@ -14,6 +14,8 @@ builder.Services.AddScoped<IMansionService, MansionService>();
 builder.Services.AddHttpClient<IMansionNumberService, MansionNumberService>();
 builder.Services.AddScoped<IMansionNumberService, MansionNumberService>();
 
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 builder.Services.AddHttpClient<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
