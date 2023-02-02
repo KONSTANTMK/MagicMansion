@@ -27,7 +27,6 @@ namespace MagicMansion_MansionAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -47,7 +46,7 @@ namespace MagicMansion_MansionAPI.Controllers
             }
             return _response;
         }
-        [Authorize(Roles = "Admin")]
+
         [HttpGet("{id:int}", Name = "GetMansion")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -84,7 +83,7 @@ namespace MagicMansion_MansionAPI.Controllers
 
         }
         [HttpPost]
-
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -122,7 +121,7 @@ namespace MagicMansion_MansionAPI.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Authorize(Roles = "CUSTOM")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<APIResponse>> DeleteMansion(int id)
         {
             try
@@ -143,6 +142,7 @@ namespace MagicMansion_MansionAPI.Controllers
             }
             return _response;
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}", Name = "UpdateMansion")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

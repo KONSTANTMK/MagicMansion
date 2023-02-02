@@ -3,10 +3,12 @@ using MagicMansion_MansionAPI.Data;
 using MagicMansion_MansionAPI.Models;
 using MagicMansion_MansionAPI.Models.Dto;
 using MagicMansion_MansionAPI.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Net;
 
 namespace MagicMansion_MansionAPI.Controllers
@@ -74,11 +76,12 @@ namespace MagicMansion_MansionAPI.Controllers
 			{
 				_response.IsSuccess = false;
 				_response.ErrorMessages = new List<string>() { ex.ToString() };
-			}
+            }
 			return _response;
 
 
 		}
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -118,6 +121,7 @@ namespace MagicMansion_MansionAPI.Controllers
 			}
 			return _response;
 		}
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}", Name = "DeleteMansionNumber")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -144,6 +148,7 @@ namespace MagicMansion_MansionAPI.Controllers
 			}
 			return _response;
 		}
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}", Name = "UpdateMansionNumber")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -45,7 +45,13 @@ namespace MagicMansion_Web.Services
 						break;
 				}
 				HttpResponseMessage apiResponse = null;
-				apiResponse = await client.SendAsync(message);
+
+                if (!string.IsNullOrEmpty(apiRequest.Token))
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiRequest.Token);
+                }
+
+                apiResponse = await client.SendAsync(message);
 
 				var apiContent = await apiResponse.Content.ReadAsStringAsync();
 

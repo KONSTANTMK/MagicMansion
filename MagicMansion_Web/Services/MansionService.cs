@@ -14,50 +14,56 @@ namespace MagicMansion_Web.Services
 			_clientFactory= clientFactory;
 			mansionUrl = configuration.GetValue<string>("ServiceUrls:MansionApi");
 		}
-		public Task<T> CreateAsync<T>(MansionCreateDTO dto)
+		public Task<T> CreateAsync<T>(MansionCreateDTO dto, string token)
 		{
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.POST,
 				Data = dto,
-				Url = mansionUrl + "/api/MansionAPI"
-			});
+				Url = mansionUrl + "/api/MansionAPI",
+                Token = token
+            });
 		}
 
-		public Task<T> DeleteAsync<T>(int id)
+		public Task<T> DeleteAsync<T>(int id, string token)
 		{
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.DELETE,
-				Url = mansionUrl + "/api/MansionAPI/"+id
-			});
+				Url = mansionUrl + "/api/MansionAPI/"+id,
+                Token = token
+            });
 		}
 
-		public Task<T> GetAllAsync<T>()
+		public Task<T> GetAllAsync<T>(string token)
 		{
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.GET,
-				Url = mansionUrl + "/api/MansionAPI"
-			});
+				Url = mansionUrl + "/api/MansionAPI",
+                Token = token
+            });
 		}
 
-		public Task<T> GetAsync<T>(int id)
+		public Task<T> GetAsync<T>(int id, string token)
 		{
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.GET,
-				Url = mansionUrl + "/api/MansionAPI/" + id
-			});
+				Url = mansionUrl + "/api/MansionAPI/" + id,
+                Token = token
+            });
 		}
 
-		public Task<T> UpdateAsync<T>(MansionUpdateDTO dto)
+		public Task<T> UpdateAsync<T>(MansionUpdateDTO dto, string token)
 		{
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.PUT,
 				Data = dto,
-				Url = mansionUrl + "/api/MansionAPI/"+dto.Id
+				Url = mansionUrl + "/api/MansionAPI/"+dto.Id,
+				Token= token
+				
 			});
 		}
 	}

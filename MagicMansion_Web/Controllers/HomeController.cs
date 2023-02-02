@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MagicMansion_Utility;
 using MagicMansion_Web.Models;
 using MagicMansion_Web.Models.Dto;
 using MagicMansion_Web.Services.IServices;
@@ -22,7 +23,7 @@ namespace MagicMansion_Web.Controllers
             List<MansionDTO> list = new();
 
 
-            var response = await _mansionService.GetAllAsync<APIResponse>();
+            var response = await _mansionService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken)); ;
             if (response != null && response.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<MansionDTO>>(Convert.ToString(response.Result));
