@@ -18,8 +18,8 @@ namespace MagicMansion_MansionAPI.Controllers
     {
         private readonly IMansionRepository _dbMansion;
         private readonly IMapper _mapper;
-		private readonly APIResponse _response;
-		public MansionAPIController(IMansionRepository dbMansion,IMapper mapper)
+        private readonly APIResponse _response;
+        public MansionAPIController(IMansionRepository dbMansion, IMapper mapper)
         {
             _dbMansion = dbMansion;
             _mapper = mapper;
@@ -28,6 +28,8 @@ namespace MagicMansion_MansionAPI.Controllers
 
         [HttpGet]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetMansions()
         {
@@ -40,14 +42,16 @@ namespace MagicMansion_MansionAPI.Controllers
             }
             catch (Exception ex)
             {
-                _response.IsSuccess= false;
-                _response.ErrorMessages= new List<string>() {ex.ToString()};
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
             }
             return _response;
-		}
-
+        }
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id:int}", Name = "GetMansion")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<APIResponse>> GetMansion(int id)
@@ -63,118 +67,120 @@ namespace MagicMansion_MansionAPI.Controllers
 
                 if (mansion == null)
                 {
-					_response.StatusCode = HttpStatusCode.NotFound;
-					return NotFound(_response);
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    return NotFound(_response);
                 }
-			    _response.Result = _mapper.Map<MansionDTO>(mansion);
-			    _response.StatusCode = HttpStatusCode.OK;
-			    return Ok(_response);
-			}
-			catch (Exception ex)
-			{
-				_response.IsSuccess = false;
-				_response.ErrorMessages = new List<string>() { ex.ToString() };
-			}
-			return _response;
+                _response.Result = _mapper.Map<MansionDTO>(mansion);
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
+            }
+            return _response;
 
 
-		}
+        }
         [HttpPost]
-        [Authorize(Roles ="admin")]
+
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> CreateMansion([FromBody] MansionCreateDTO createDTO)
         {
             try
-            { 
-            if (await _dbMansion.GetAsync(u => u.Name.ToLower() == createDTO.Name.ToLower()) != null)
             {
-                ModelState.AddModelError("ErrorMessages", "Mansion already exists");
-                return BadRequest(ModelState);
+                if (await _dbMansion.GetAsync(u => u.Name.ToLower() == createDTO.Name.ToLower()) != null)
+                {
+                    ModelState.AddModelError("ErrorMessages", "Mansion already exists");
+                    return BadRequest(ModelState);
+                }
+                if (createDTO == null)
+                {
+                    return BadRequest();
+                }
+
+                Mansion model = _mapper.Map<Mansion>(createDTO);
+                await _dbMansion.CreateAsync(model);
+                _response.Result = _mapper.Map<MansionDTO>(model);
+                _response.StatusCode = HttpStatusCode.Created;
+                return CreatedAtRoute("GetMansion", new { id = model.Id }, _response);
             }
-            if (createDTO == null)
+            catch (Exception ex)
             {
-                return BadRequest();
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
+
             }
-
-            Mansion model = _mapper.Map<Mansion>(createDTO);
-            await _dbMansion.CreateAsync(model);
-			_response.Result = _mapper.Map<MansionDTO>(model);
-			_response.StatusCode = HttpStatusCode.Created;
-			return CreatedAtRoute("GetMansion", new { id = model.Id }, _response);
-			}
-			catch (Exception ex)
-			{
-				_response.IsSuccess = false;
-				_response.ErrorMessages = new List<string>() { ex.ToString() };
-
-			}
-			return _response;
-		}
+            return _response;
+        }
         [HttpDelete("{id:int}", Name = "DeleteMansion")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "CUSTOM")]
         public async Task<ActionResult<APIResponse>> DeleteMansion(int id)
         {
             try
-            { 
-            if (id == 0) return BadRequest();
-            var mansion = await _dbMansion.GetAsync(u => u.Id == id);
-            if (mansion == null) return NotFound();
-			await _dbMansion.RemoveAsync(mansion);
-			_response.Result = _mapper.Map<MansionDTO>(mansion);
-			_response.StatusCode = HttpStatusCode.NoContent;
-			return Ok(_response);
-			}
-			catch (Exception ex)
-			{
-				_response.IsSuccess = false;
-				_response.ErrorMessages = new List<string>() { ex.ToString() };
+            {
+                if (id == 0) return BadRequest();
+                var mansion = await _dbMansion.GetAsync(u => u.Id == id);
+                if (mansion == null) return NotFound();
+                await _dbMansion.RemoveAsync(mansion);
+                _response.Result = _mapper.Map<MansionDTO>(mansion);
+                _response.StatusCode = HttpStatusCode.NoContent;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
 
-			}
-			return _response;
-		}
+            }
+            return _response;
+        }
         [HttpPut("{id:int}", Name = "UpdateMansion")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> UpdateMansion(int id,[FromBody] MansionUpdateDTO updateDTO)
+        public async Task<ActionResult<APIResponse>> UpdateMansion(int id, [FromBody] MansionUpdateDTO updateDTO)
         {
             try
             {
-            if(updateDTO == null || id != updateDTO.Id) return BadRequest();
+                if (updateDTO == null || id != updateDTO.Id) return BadRequest();
 
-			Mansion model = _mapper.Map<Mansion>(updateDTO);
-			await _dbMansion.UpdateAsync(model);
-			_response.StatusCode = HttpStatusCode.NoContent;
-            _response.IsSuccess= true;
-			return Ok(_response);
-			}
-			catch (Exception ex)
-			{
-				_response.IsSuccess = false;
-				_response.ErrorMessages = new List<string>() { ex.ToString() };
+                Mansion model = _mapper.Map<Mansion>(updateDTO);
+                await _dbMansion.UpdateAsync(model);
+                _response.StatusCode = HttpStatusCode.NoContent;
+                _response.IsSuccess = true;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
 
-			}
-			return _response;
-		}
+            }
+            return _response;
+        }
         [HttpPatch("{id:int}", Name = "UpdatePartialMansion")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdatePartialMansion(int id, JsonPatchDocument<MansionUpdateDTO> patchDTO)
         {
-            if(patchDTO == null || id==0) return BadRequest();
+            if (patchDTO == null || id == 0) return BadRequest();
 
-            var mansion = await _dbMansion.GetAsync(u=>u.Id==id,tracked:false);
+            var mansion = await _dbMansion.GetAsync(u => u.Id == id, tracked: false);
 
-			MansionUpdateDTO mansionDTO = _mapper.Map<MansionUpdateDTO>(mansion);
+            MansionUpdateDTO mansionDTO = _mapper.Map<MansionUpdateDTO>(mansion);
 
             if (mansion == null) return BadRequest();
-            patchDTO.ApplyTo(mansionDTO,ModelState);
+            patchDTO.ApplyTo(mansionDTO, ModelState);
 
-			Mansion model = _mapper.Map<Mansion>(mansionDTO);
+            Mansion model = _mapper.Map<Mansion>(mansionDTO);
             await _dbMansion.UpdateAsync(model);
             if (!ModelState.IsValid) return BadRequest(ModelState);
             return NoContent();
