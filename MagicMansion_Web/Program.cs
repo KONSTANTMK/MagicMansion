@@ -14,6 +14,9 @@ builder.Services.AddScoped<IMansionService, MansionService>();
 builder.Services.AddHttpClient<IMansionNumberService, MansionNumberService>();
 builder.Services.AddScoped<IMansionNumberService, MansionNumberService>();
 
+builder.Services.AddHttpClient<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
