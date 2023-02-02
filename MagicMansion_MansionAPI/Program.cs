@@ -5,6 +5,7 @@ using MagicMansion_MansionAPI.Repository;
 using MagicMansion_MansionAPI.Repository.IRepository;
 using MagicMansion_MansionAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
@@ -26,6 +27,11 @@ builder.Services.AddScoped<IMansionNumberRepository,MansionNumberRepository>();
 builder.Services.AddScoped<IMansionRepository, MansionRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
+
+builder.Services.AddApiVersioning(options => {
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+});
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
 

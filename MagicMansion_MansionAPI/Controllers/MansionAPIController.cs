@@ -14,6 +14,7 @@ namespace MagicMansion_MansionAPI.Controllers
 {
     [Route("api/MansionAPI")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class MansionAPIController : ControllerBase
     {
         private readonly IMansionRepository _dbMansion;
